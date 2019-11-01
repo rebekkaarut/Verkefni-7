@@ -1,3 +1,5 @@
+
+
 /**
  * Verkefni 7 – Gisk leikur
  *
@@ -13,17 +15,24 @@
  *  - Seinni leikur kláraðist í þrem ágiskunum.
  */
 
- const games = [];
+const games = [];
 
+/**
+ * Byrjar leikinn okkar með því að kalla í play().
+ * Eftir að play() klárar þá er boðið notandanum að spila annann leik með confirm()
+ * Ef notandi ýtir á "ok" þá er annar leikur spilaður.
+ * Ef notandi ýtir á "cancel" þá er sótt niðurstöður með getResults() og þær birtar með alert().
+ */
 
- /**
-  * Byrjar leikinn okkar með því að kalla í play().
-  * Eftir að play() klárar þá er boðið notandanum að spila annann leik með confirm()
-  * Ef notandi ýtir á "ok" þá er annar leikur spilaður.
-  * Ef notandi ýtir á "cancel" þá er sótt niðurstöður með getResults() og þær birtar með alert().
-  */
 function start() {
-  play();
+    play();
+    let begin = confirm("Viltu spila annann leik?");
+    while (begin === true) {
+        play();
+        let begin = confirm("Viltu spila annann leik?")
+    } if (begin === false){
+        alert(getResults());
+    }
 }
 
 /**
@@ -34,14 +43,27 @@ function start() {
  *  - Láta vita hversu nálægt eða rétt gisk er með getResponse() og alert()
  *  - Haldautan um fjölda ágiskana
  *  - Vista fjölda ágiskana í "games" fylki þegar búið er að giska rétt
- * 
+ *
  * Ef notandi ýtir á cancel þegar beðið er um ágiskun skal hætta í leik en ekki vista ágiskanir
  *  - t.d. með því að nota break í lykkju.
- * 
+ *
  * Þarf aðútfæra með lykkju og flæðisstýringum
  */
+
 function play() {
-  const random = randomNumber(1,100;
+    const random = randomNumber(1,100);
+    var count = 0;
+    while (getResponse(guess,random)!="Rétt") {
+        var guess = prompt("Giskaðu á tölu frá 1 - 100");
+        if (guess === null) {
+            break;
+        }
+        alert(getResponse(parseGuess(guess), random));
+        count++
+    }
+    if (guess === null) return;
+
+    else games.push(count);
 }
 
 /**
@@ -53,28 +75,44 @@ function play() {
  * Ef enginn leikur var spilaður er skilað:
  *    "Þú spilaðir engann leik >_<"
  */
-function getResults(){
 
+function getResults() {
+    if (games.length > 0) {
+        return "Þú spilaðir " + games.length + " leiki\nmeðalfjöldi ágiskana var " + calculateAverage();
+    } else {
+        return "Þú spilaðir engann leik";
+    }
 }
 
 /**
- * Reiknar út og skilar meðal ágiskunum í öllum leikjum sem geymdir eru í 
+ * Reiknar út og skilar meðal ágiskunum í öllum leikjum sem geymdir eru í
  * global breytu "games". Skilar gildi með tveim aukastöfum.
  * Ef games = [3,3,4] er niðurstaðan (3+3+4)/3 = 3.66666667
  * og henni skilað sem 3.67
- * 
+ *
  * þarf að útfæra með lykkju.
  */
-function calculateAverage(){
 
+function calculateAverage(){
+    let x = 0;
+    for(i = 0; i < games.length; i++) {
+        x = games[i] + x;
+    }
+    let answer = x/games.length;
+    return answer.toFixed(2);
 }
 
 /**
  * tekur in input sem streng og skilar þeirri tölu sem hægt er að ná þar úr.
  * Ef ekki er hægt að ná tölu úr input er skilað null
  */
-function parseGuess(input){
 
+function parseGuess(input){
+    if (isNaN(parseInt(input)) === true) {
+        return null;
+    } else {
+        return parseInt(input);
+    }
 }
 
 /**
@@ -88,19 +126,36 @@ function parseGuess(input){
  * Ef munur er undir 20 skal skila "Frekar langt frá"
  * Ef munur er undir 50 skal skila "Langt frá"
  * Annars skal skila "Mjög langt frá"
- * 
+ *
  * Þarf að útfæra með flæðistýringu.
  * Math.abs skilar algildi tölu: |a| = Math.abs(a)
  */
+
 function getResponse(guess, correct){
-  return 'Ekki rétt';
+
+    if (guess < 0 || guess == null) { return "Verður að setja inn tölu á bilinu 1 - 100"; }
+
+    else if (guess > 100) { return "Verður að setja inn tölu á bilinu 1 - 100";}
+
+    else if (guess === correct) { return "Rétt :)"; }
+
+    else if (Math.abs(correct-guess) < 5) { return "Mjög nálægt"; }
+
+    else if (Math.abs(correct-guess) < 10) { return "Nálægt"; }
+
+    else if (Math.abs(correct-guess) < 20) { return "Frekar langt frá"; }
+
+    else if (Math.abs(correct-guess) < 50) { return "Langt frá"; }
+
+    else { return "Mjög langt frá :("; }
 }
 
 /**
  * Skilar tölu af handahófi á bilinu [min, max]
  */
+
 function randomNumber(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 // Byrjar leik
